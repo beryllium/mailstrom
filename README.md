@@ -49,4 +49,4 @@ Or you can specify the message as a string:
 Credits
 -------
 
-Built by Kevin Boyd <kevin.boyd@gmail.com> using Amazon's AWS SDK for PHP and PHP-CLI-TOOLS from https://github.com/jlogsdon
+Built by Kevin Boyd ( http://beryllium.ca | http://github.com/beryllium ) using Amazon's AWS SDK for PHP and PHP-CLI-TOOLS from https://github.com/jlogsdon
