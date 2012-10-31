@@ -34,7 +34,6 @@ An example configuration file would look like:
     access_key=AAAAAKAKKAKAK
     secret_key=AEAET+/akakak
     from=no-reply@example.com
-    sns_topic=:::sometopic
 
 Usage
 -----
