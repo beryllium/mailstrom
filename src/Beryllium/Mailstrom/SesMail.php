@@ -64,7 +64,11 @@ class SesMail
 
     public function setRecipient($to)
     {
-        $this->to = $to;
+        if (false !== strpos($to, ',')) {
+            $this->to = explode(',', $to);
+        } else {
+            $this->to = array($to);
+        }
         return $this;
     }
 
@@ -84,14 +88,19 @@ class SesMail
             throw new \InvalidArgumentException('You have specified an invalid sender email address.');
         }
 
-        if (empty($this->to)) {
+        if (empty($this->to) || !is_array($this->to) || count($this->to) == 0) {
             throw new \InvalidArgumentException('You must specify a recipient for this message.');
-        } elseif (
-            !filter_var($this->to, FILTER_VALIDATE_EMAIL) ||
-            // Normally one would do ===false, but we don't want "@example.com" as the email
-            strpos($this->to, '@') == false
-        ) {
-            throw new \InvalidArgumentException('You have specified an invalid recipient email address.');
+        } else {
+            foreach ($this->to as $email) {
+                if (
+                    !filter_var($email, FILTER_VALIDATE_EMAIL) ||
+                    // Normally one would do ===false, but we don't want "@example.com" as the email
+                    // So it is ok that a position of '0' evaluates to false
+                    strpos($email, '@') == false
+                ) {
+                    throw new \InvalidArgumentException('You have specified an invalid recipient email address: ' . $email);
+                }
+            }
         }
 
         if (empty($this->subject)) {
@@ -111,7 +120,7 @@ class SesMail
         $this->responses[] = $this->_ses->send_email(
             $this->from,
             array(
-                'ToAddresses' => array($this->to),
+                'ToAddresses' => $this->to,
             ),
             array(
                 'Subject.Data' => $this->subject,
