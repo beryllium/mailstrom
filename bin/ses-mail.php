@@ -75,6 +75,17 @@ if ($result) {
     \cli\Streams::line('Error Code: ' . $error_code);
     \cli\Streams::line('Error Message: ' . $error_msg);
 
+    if ( $error_code == 'SignatureDoesNotMatch' )
+    {
+      \cli\Streams::line();
+      \cli\Streams::line("\t".'This error can mean a variety of things:');
+      \cli\Streams::line();
+      \cli\Streams::line("\t\t".'1. Your access key or secret key may be incorrect');
+      \cli\Streams::line("\t\t".'2. Your system clock may be too far out of phase with atomic time (this can cause a signature verification issue)');
+      \cli\Streams::line("\t\t".'3. The IAM credentials may not have sufficient privileges to send mail via SES');
+      \cli\Streams::line();
+    }
+
     // If you're not familiar with exit codes, you should look up boolean logic in CLI shells ... pretty useful. :)
     exit(1);
 }
