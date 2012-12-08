@@ -3,38 +3,48 @@
 
 require_once __DIR__ . '/../bootstrap.php';
 
-$arguments = new \cli\Arguments(array(
-    'flags' => array(
-        'verbose' => array(
-            'description' => 'Turn on verbose mode',
-            'aliases' => array('v'),
-        ),
-    ),
-    'options' => array(
-        'config' => array(
-            'description' => 'Location of config file to use',
-        ),
-        'to' => array(
-            'description' => 'Email Recipient',
-            'aliases' => array('recipient'),
-        ),
-        'from' => array(
-            'description' => 'Email Sender',
-            'aliases' => array('sender'),
-        ),
-        'subject' => array(
-            'description' => 'Email Subject',
-            'aliases' => array('s'),
-        ),
-        'message' => array(
-            'description' => 'Optional string to send as message body (or use STDIN)',
-            'aliases' => array('m'),
-        ),
-    ),
-));
+use GetOptionKit\GetOptionKit;
 
-$arguments->parse();
-$args = $arguments->getArguments();
+$getopt = new GetOptionKit();
+
+$spec = $getopt->add( 'h|help', 'Show help screen' );
+//$getopt->add( 'v|verbose', 'Turn on verbose mode' );
+//$getopt->add( 'c|config?', "Location of config file to use" );
+$getopt->add( 'from?', 'Sender' );
+$getopt->add( 's|subject:', 'Subject' );
+$getopt->add( 'm|message?', 'Body' );
+$getopt->add( 'to:', 'Recipient' );
+
+$options = $getopt->parse( $argv );
+
+if ( $options->has( 'help' ) )
+{ 
+  writeln( "Usage: ses-mail [-s subject] to-addr");
+  $getopt->specs->printOptions();
+  writeln();
+  exit(0);
+}
+
+$arguments = $options->getArguments();
+array_shift($arguments); //We don't need the first element at the moment (path to the executable)
+
+$args = $options->toArray();
+
+if ( count( $arguments ) == 1 && $options->has('to') )
+{
+  echo "ERROR: Syntax error. Please specify a recipient using either an argument or the --to option. Not both.\n";
+  exit (1);
+}
+
+if ( count( $arguments ) > 1 )
+{
+  echo "ERROR: Too many arguments.\n";
+  exit (1);
+}
+else if ( count( $arguments == 1 ) )
+{
+  $args['to'] = $arguments[0];
+}
 
 // Override global settings with CLI options (if any)
 $settings = array_merge($settings, $args);
@@ -59,11 +69,11 @@ $mail = new Beryllium\Mailstrom\SesMail($settings, $ses);
 $result = $mail->send();
 
 if ($result) {
-    \cli\Streams::line('Sent!');
+    writeln('Sent!');
 
     exit(0);
 } else {
-    \cli\Streams::line('Failed!');
+    writeln('Failed!');
 
     // Extracting the error messages from CFResponse, which is just a SimpleXML wrapper
     // This means that it's possible this barebones error extraction code could cause additional errors - if you encounter one,
@@ -72,20 +82,19 @@ if ($result) {
     $error_code = $error->Error->Code;
     $error_msg = substr($error->Error->Message, 0, strpos($error->Error->Message, "\n"));
 
-    \cli\Streams::line('Error Code: ' . $error_code);
-    \cli\Streams::line('Error Message: ' . $error_msg);
+    writeln('Error Code: ' . $error_code);
+    writeln('Error Message: ' . $error_msg);
 
     if ( $error_code == 'SignatureDoesNotMatch' )
     {
-      \cli\Streams::line();
-      \cli\Streams::line("\t".'This error can mean a variety of things:');
-      \cli\Streams::line();
-      \cli\Streams::line("\t\t".'1. Your access key or secret key may be incorrect');
-      \cli\Streams::line("\t\t".'2. Your system clock may be too far out of phase with atomic time (this can cause a signature verification issue)');
-      \cli\Streams::line("\t\t".'3. The IAM credentials may not have sufficient privileges to send mail via SES');
-      \cli\Streams::line();
+      writeln();
+      writeln("\t".'This error can mean a variety of things:');
+      writeln();
+      writeln("\t\t".'1. Your access key or secret key may be incorrect');
+      writeln("\t\t".'2. Your system clock may be too far out of phase with atomic time (this can cause a signature verification issue)');
+      writeln("\t\t".'3. The IAM credentials may not have sufficient privileges to send mail via SES');
+      writeln();
     }
 
-    // If you're not familiar with exit codes, you should look up boolean logic in CLI shells ... pretty useful. :)
     exit(1);
 }

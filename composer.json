@@ -3,7 +3,7 @@
     "description": "Small php-cli application for sending email via Amazon SES and SNS",
     "require": {
         "amazonwebservices/aws-sdk-for-php": "dev-master",
-        "jlogsdon/cli": "*"
+        "c9s/GetOptionKit": "dev-master"
     },
     "autoload": {
       "psr-0": { "Beryllium": "src/" }

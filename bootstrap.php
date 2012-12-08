@@ -32,3 +32,9 @@ if (file_exists(MAILSTROM_LOCAL_INI)) {
         $settings = array_merge($settings, $local_ini);
     }
 }
+
+function writeln( $msg = '' )
+{
+  echo $msg . "\n";
+}
+
