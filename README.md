@@ -1,9 +1,12 @@
 Mailstrom
 =========
 
-Mailstrom is a simple command-line script for sending emails via Amazon SES.
+Mailstrom is a command-line script for sending emails via Amazon SES. It is sort of intended to be a drop-in replacement
+for the "mail" command, so that you can use Amazon SES in scripts instead of configuring a full Sendmail or Postfix 
+environment on every server. 
 
-(Because configuring sendmail/postfix to do this is *INSANE*)
+Sendmail and Postfix can be a hassle, and are largely overkill for most cloud servers, so with Mailstrom you can save 
+yourself some effort and maintenance headaches.
 
     ... this can be nothing else than the great whirlpool of the Maelström ...
     ... in the centre of the channel of the Maelström is an abyss penetrating the globe ...
@@ -23,6 +26,11 @@ Configure it to be available in your $PATH:
 
     $> cd /usr/local/bin
     $> ln -s /path/to/mailstrom/bin/ses-mail.php ses-mail
+
+Or, if you wish, configure it as a drop-in replacement for the "mail" command (presuming it does not currently exist):
+
+    $> cd /usr/local/bin
+    $> ln -s /path/to/mailstrom/bin/ses-mail.php mail
 
 Configuration
 -------------
@@ -49,4 +57,4 @@ Or you can specify the message as a string:
 Credits
 -------
 
-Built by Kevin Boyd ( http://beryllium.ca | http://github.com/beryllium ) using Amazon's AWS SDK for PHP and GetOptionKit from https://github.com/c9s
+Built by Kevin Boyd ( http://whateverthing.com | http://github.com/beryllium ) using Amazon's AWS SDK for PHP 2 and GetOptionKit from https://github.com/c9s

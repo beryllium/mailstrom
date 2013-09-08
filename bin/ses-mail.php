@@ -4,6 +4,7 @@
 require_once __DIR__ . '/../bootstrap.php';
 
 use GetOptionKit\GetOptionKit;
+use Aws\Ses\SesClient;
 
 $getopt = new GetOptionKit();
 
@@ -41,7 +42,7 @@ if ( count( $arguments ) > 1 )
   echo "ERROR: Too many arguments.\n";
   exit (1);
 }
-else if ( count( $arguments == 1 ) )
+else if ( count( $arguments ) == 1 )
 {
   $args['to'] = $arguments[0];
 }
@@ -59,41 +60,39 @@ if (empty($settings['message'])) {
     }
 }
 
-$ses = new \AmazonSES(array(
+$ses = SesClient::factory(array(
     'key' => $settings['access_key'],
     'secret' => $settings['secret_key'],
+    'region' => 'us-east-1',
 ));
 
 $mail = new Beryllium\Mailstrom\SesMail($settings, $ses);
 
 $result = $mail->send();
 
-if ($result) {
+if (true === $result['status']) {
     writeln('Sent!');
 
     exit(0);
 } else {
     writeln('Failed!');
 
-    // Extracting the error messages from CFResponse, which is just a SimpleXML wrapper
-    // This means that it's possible this barebones error extraction code could cause additional errors - if you encounter one,
-    // please file an issue with an output example!
-    $error = end($mail->responses)->body;
-    $error_code = $error->Error->Code;
-    $error_msg = substr($error->Error->Message, 0, strpos($error->Error->Message, "\n"));
+    $error_code = $result['exception']->getCode();
+    writeln('Error Code: ' . $error_code );
+    writeln('Error Message: ' . $result['exception']->getMessage() );
 
-    writeln('Error Code: ' . $error_code);
-    writeln('Error Message: ' . $error_msg);
-
-    if ( $error_code == 'SignatureDoesNotMatch' )
+    switch ( $error_code )
     {
+    case 0:
+    default:
       writeln();
       writeln("\t".'This error can mean a variety of things:');
       writeln();
       writeln("\t\t".'1. Your access key or secret key may be incorrect');
-      writeln("\t\t".'2. Your system clock may be too far out of phase with atomic time (this can cause a signature verification issue)');
-      writeln("\t\t".'3. The IAM credentials may not have sufficient privileges to send mail via SES');
+      writeln("\t\t".'2. The IAM credentials may not have sufficient privileges to send mail via SES');
+      writeln("\t\t".'3. Your system clock may be too far out of phase with atomic time (this can cause a signature verification issue)');
       writeln();
+      break;
     }
 
     exit(1);
