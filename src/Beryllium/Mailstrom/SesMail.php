@@ -117,17 +117,29 @@ class SesMail
     {
         $this->validate();
 
-        $this->responses[] = $this->_ses->send_email(
-            $this->from,
-            array(
-                'ToAddresses' => $this->to,
-            ),
-            array(
-                'Subject.Data' => $this->subject,
-                'Body.Text.Data' => $this->message,
-            )
-        );
+        $result = array('status'=>true);
 
-        return end($this->responses)->isOK();
+        try
+        {
+        $result['response'] = $this->_ses->sendEmail(
+            array(
+                'Source' => $this->from,
+                'Destination' => array(
+                    'ToAddresses' => $this->to,
+                ),
+                'Message' => array(
+                    'Subject' => array('Data' => $this->subject),
+                    'Body' => array('Text'=>array('Data' => $this->message)),
+                )
+        ));
+        } catch( \Exception $e )
+        {
+            $result['status'] = false;
+            $result['exception'] = $e;
+        }
+
+        $this->responses[] = $result;
+
+        return $result;
     }
 }

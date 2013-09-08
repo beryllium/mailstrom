@@ -2,7 +2,7 @@
     "name": "beryllium/mailstrom",
     "description": "Small php-cli application for sending email via Amazon SES and SNS",
     "require": {
-        "amazonwebservices/aws-sdk-for-php": "dev-master",
+        "aws/aws-sdk-php": "2.*",
         "c9s/GetOptionKit": "dev-master"
     },
     "autoload": {
