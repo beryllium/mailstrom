@@ -13,8 +13,9 @@ It can also be used interactively to write emails, just like `mail` (press Ctrl+
     $> mail -s "My Subject" my.email@example.com
     Dear Sir or Madam,
 
-    I would like to tell you about how awesome the developer of Mailstrom is, and how you should totally follow his blog
-    at http://whateverthing.com/ and perhaps even sign up for his forum-as-a-service offering at http://wtboard.com/
+    I would like to tell you about how awesome the developer of Mailstrom is, and how 
+    you should totally follow his blog at http://whateverthing.com/ and perhaps even 
+    sign up for his forum-as-a-service offering at http://wtboard.com/
 
     Sincerely,
 
@@ -85,6 +86,6 @@ Or you can specify the message as a string:
 Credits
 -------
 
-Built by Kevin Boyd ( http://whateverthing.com | http://github.com/beryllium ) using Amazon's AWS SDK for PHP 2 and GetOptionKit from https://github.com/c9s
+Built by Kevin Boyd ( http://whateverthing.com | http://github.com/beryllium ) using Amazon's AWS SDK for PHP 2, GetOptionKit, and SwiftMailer.
 
 Note: This project is in no way related to the Mailstrom "Inbox Zero" mail client.
