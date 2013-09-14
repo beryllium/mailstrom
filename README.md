@@ -6,7 +6,7 @@ Mailstrom is a command-line script for sending emails via SMTP or Amazon SES.
 It behaves similarly to the UNIX `mail` command, in that it can accept an email body via a pipe and then transmit it
 over the configured protocol to the specified destination:
 
-    $> echo "Testing" | bin/ses-mail.php -s "My Subject" my.email@example.com
+    $> echo "Testing" | bin/mailstrom -s "My Subject" my.email@example.com
 
 It can also be used interactively to write emails, just like `mail` (press Ctrl+D on a blank line to signal the end of input):
 
@@ -46,12 +46,12 @@ Fetch from Github and install dependencies using Composer:
 Configure it to be available in your $PATH:
 
     $> cd /usr/local/bin
-    $> ln -s /path/to/mailstrom/bin/ses-mail.php ses-mail
+    $> ln -s /path/to/mailstrom/bin/mailstrom mailstrom
 
 Or, if you wish, configure it as a drop-in replacement for the "mail" command (presuming it does not currently exist):
 
     $> cd /usr/local/bin
-    $> ln -s /path/to/mailstrom/bin/ses-mail.php mail
+    $> ln -s /path/to/mailstrom/bin/mailstrom mail
 
 Configuration
 -------------
@@ -71,17 +71,18 @@ Alternatively, an SMTP configuration file would specify a "type" (Amazon SES is 
     smtp_port=25
     smtp_user=username (optional)
     smtp_pass=pass (optional)
+    from=no-reply@example.com
 
 Usage
 -----
 
 As mentioned above, this is intended to be somewhat of a replacement for the `mail` command, so you can use it like this:
 
-    $> cat MyFile.txt | ses-mail --to user@example.com --subject "Output of MyFile.txt"
+    $> cat MyFile.txt | mailstrom --to user@example.com --subject "Output of MyFile.txt"
 
 Or you can specify the message as a string:
 
-    $> ses-mail --to user@example.com --subject "Output of MyFile.txt" --message "My email message"
+    $> mailstrom --to user@example.com --subject "Output of MyFile.txt" --message "My email message"
 
 Credits
 -------
