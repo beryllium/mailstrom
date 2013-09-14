@@ -12,7 +12,7 @@ ini_set('html_errors', 0);
 define('MAILSTROM_GLOBAL_INI', '/etc/mailstrom.ini');
 define('MAILSTROM_LOCAL_INI', $_SERVER['HOME'] . '/.mailstrom.ini');
 
-$settings = array();
+$settings = array('type'=>'ses');
 
 require_once __DIR__ . '/vendor/autoload.php';
 
