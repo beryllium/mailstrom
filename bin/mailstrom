@@ -22,7 +22,7 @@ $options = $getopt->parse( $argv );
 
 if ( $options->has( 'help' ) )
 { 
-  writeln( "Usage: ses-mail [-s subject] to-addr");
+  writeln( "Usage: mailstrom [-s subject] to-addr");
   $getopt->specs->printOptions();
   writeln();
   exit(0);
