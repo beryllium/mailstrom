@@ -5,6 +5,8 @@ require_once __DIR__ . '/../bootstrap.php';
 
 use GetOptionKit\GetOptionKit;
 use Aws\Ses\SesClient;
+use Beryllium\Mailstrom\SesMail;
+use Beryllium\Mailstrom\SmtpMail;
 
 $getopt = new GetOptionKit();
 
@@ -60,13 +62,28 @@ if (empty($settings['message'])) {
     }
 }
 
-$ses = SesClient::factory(array(
-    'key' => $settings['access_key'],
-    'secret' => $settings['secret_key'],
-    'region' => 'us-east-1',
-));
+switch ($settings['type'])
+{
+case 'ses':
+default:
+    $ses = SesClient::factory(array(
+        'key' => $settings['access_key'],
+        'secret' => $settings['secret_key'],
+        'region' => 'us-east-1',
+    ));
 
-$mail = new Beryllium\Mailstrom\SesMail($settings, $ses);
+    $mail = new SesMail($settings, $ses);
+break;
+case 'smtp':
+    $transport = Swift_SmtpTransport::newInstance($settings['smtp_server'], $settings['smtp_port']);
+    if (isset($settings['smtp_user'])) $transport->setUsername($settings['smtp_user']);
+    if (isset($settings['smtp_pass'])) $transport->setUsername($settings['smtp_pass']);
+
+    $mailer = Swift_Mailer::newInstance($transport);
+
+    $mail = new SmtpMail($settings, $mailer);
+    break;
+}
 
 $result = $mail->send();
 
