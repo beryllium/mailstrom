@@ -78,6 +78,7 @@ case 'smtp':
     $transport = Swift_SmtpTransport::newInstance($settings['smtp_server'], $settings['smtp_port']);
     if (isset($settings['smtp_user'])) $transport->setUsername($settings['smtp_user']);
     if (isset($settings['smtp_pass'])) $transport->setPassword($settings['smtp_pass']);
+    if (isset($settings['smtp_encryption'])) $transport->setEncryption($settings['smtp_encryption']);
 
     $mailer = Swift_Mailer::newInstance($transport);
 
