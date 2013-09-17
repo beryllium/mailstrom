@@ -71,6 +71,7 @@ Alternatively, an SMTP configuration file would specify a "type" (Amazon SES is 
     smtp_port=25
     smtp_user=username (optional)
     smtp_pass=pass (optional)
+    smtp_encryption=ssl (optional. Supports ssl and tls. Omit this setting to leave encryption disabled.)
     from=no-reply@example.com
 
 Usage
