@@ -56,7 +56,8 @@ Or, if you wish, configure it as a drop-in replacement for the "mail" command (p
 Configuration
 -------------
 
-Mailstrom looks in /etc/mailstrom.ini and ~/.mailstrom.ini for default settings, but anything you specify on the command line takes precedence.
+Mailstrom looks in /etc/mailstrom.ini and ~/.mailstrom.ini for connection settings, but you can also specify other fields (From/To/Subject/Message)
+in the INI file. From/To/Subject/Message values specified on the command line take precedence over the INI values.
 
 An example Amazon SES configuration file would look like:
 
@@ -73,6 +74,10 @@ Alternatively, an SMTP configuration file would specify a "type" (Amazon SES is 
     smtp_pass=pass (optional)
     smtp_encryption=ssl (optional. Supports ssl and tls. Omit this setting to leave encryption disabled.)
     from=no-reply@example.com
+
+**Note:** Some passwords with special characters may need to be quoted in the INI files, in order to prevent `parse_ini_file` from throwing errors:
+
+    smtp_pass="This password is SPECIAL!!!11!"
 
 Usage
 -----
